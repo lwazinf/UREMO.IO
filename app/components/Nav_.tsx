@@ -42,7 +42,7 @@ const Nav_ = () => {
 
   const generateURL = () => {
     let images_: any = [];
-    product_.forEach((element) => {
+    product_.forEach((element:any) => {
       images_.push(element.url);
     });
     const total_ = images_.length;
@@ -205,7 +205,7 @@ export const Search_ = () => {
   useEffect(() => {
     // products_
     let x:any = []
-    products_.forEach((e) => {
+    products_.forEach((e:any) => {
       if(!x.includes(e.collection)){
         x = [...x, e.collection]
       }
@@ -287,7 +287,7 @@ export const Search_ = () => {
           <div
             className={`w-full h-full flex flex-row md2:justify-end justify-center items-center`}
           >
-            {tags_.map((obj_, index) => {
+            {tags_.map((obj_:any, index:any) => {
               return (
                 <div
                   className={`min-w-[80px] h-[20px] border-solid border-[1px] border-black/50 hover:border-orange-600 flex flex-row justify-center items-center rounded-[15px] mx-1 px-4 cursor-pointer text-black/65 hover:text-white/80 hover:bg-orange-600 ${

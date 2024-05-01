@@ -1,38 +1,7 @@
 // @ts-nocheck
 "use client";
-import {
-  faBell,
-  faCheckCircle,
-  faUser,
-} from "@fortawesome/free-regular-svg-icons";
-import {
-  faAngleLeft,
-  faArrowRotateLeft,
-  faBars,
-  faChartArea,
-  faCircleArrowRight,
-  faCog,
-  faHamburger,
-  faHouse,
-  faLeftLong,
-  faSearch,
-  faShoppingCart,
-  faSignOut,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+
 import Stage_ from "./components/Stage_";
-import { faCloudversify } from "@fortawesome/free-brands-svg-icons";
-import { useRecoilState } from "recoil";
-import {
-  DataState,
-  OpenState,
-  ProductState,
-  SearchState,
-} from "./components/atoms/atoms";
-import Nav_, { Search_ } from "./components/Nav_";
 
 export default function Home() {
   return (
