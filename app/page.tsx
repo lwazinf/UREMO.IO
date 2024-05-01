@@ -18,7 +18,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getProducts_();
+    if(user_){
+      getProducts_();
+    }
   }, [user_]);
   return (
     <main className="flex min-h-screen flex-row items-center justify-center">
