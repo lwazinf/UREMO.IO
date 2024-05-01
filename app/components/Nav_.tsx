@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import {
+  useRecoilState,
+  useRecoilState_TRANSITION_SUPPORT_UNSTABLE,
+} from "recoil";
 import {
   DataState,
   DataTempState,
@@ -11,6 +14,7 @@ import {
   ProductState,
   SearchState,
   MenuState,
+  UserState,
 } from "./atoms/atoms";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudversify, faTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -31,6 +35,9 @@ import {
   faSignOut,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { getCollection_, signIn_ } from "./utils/utils";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
 
 interface Nav_Props {}
 
@@ -38,11 +45,12 @@ const Nav_ = () => {
   const [URL_, setURL_] = useState("");
   const [switch_, setSwitch_] = useState(true);
   const [menu_, setMenu_] = useRecoilState(MenuState);
+  const [user_, setUser_] = useRecoilState(UserState);
   const [product_, setProduct_] = useRecoilState(ProductState);
 
   const generateURL = () => {
     let images_: any = [];
-    product_.forEach((element:any) => {
+    product_.forEach((element: any) => {
       images_.push(element.url);
     });
     const total_ = images_.length;
@@ -50,7 +58,7 @@ const Nav_ = () => {
     setSwitch_(!switch_);
     return images_[randomNumber];
   };
-
+  
   useEffect(() => {
     setURL_(generateURL());
     const interval = setInterval(() => {
@@ -67,7 +75,40 @@ const Nav_ = () => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [product_]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is logged in:", user.uid);
+
+        // Create a new object with the user information
+        const newUser = {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          dp: user.photoURL /* and other properties */,
+        };
+
+        // Set the new user object in your application state
+        setUser_(newUser);
+
+        // Additional logic, if needed
+      } else {
+        // User is signed out
+        console.log("User is logged out");
+
+        // Clear user information or perform other actions when the user logs out
+        setUser_(null);
+
+        // Additional logic, if needed
+      }
+    });
+
+    // Cleanup the listener when the component is unmounted
+    return () => unsubscribe();
+  }, []); // Empty dependency array ensures the effect runs only once on mount
   return (
     <div
       className={`min-h-screen w-[250px] flex-col justify-start items-center fixed top-0 ${
@@ -102,8 +143,21 @@ const Nav_ = () => {
               icon: faBars,
             },
             {
-              func: () => {
-                setMenu_(!menu_);
+              func: async () => {
+                // setMenu_(!menu_);
+                await signIn_().then((e) => {
+                  // Create a new object with the user information
+                  const newUser = {
+                    uid: e.uid,
+                    displayName: e.displayName,
+                    email: e.email,
+                    dp: e.photoURL /* and other properties */,
+                  };
+
+                  // Set the new user object in your application state
+                  // setUser_(newUser);
+                  console.log(newUser);
+                });
               },
               icon: faUser,
             },
@@ -201,17 +255,18 @@ export const Search_ = () => {
   const [dataTemp_, setDataTemp_] = useRecoilState(DataTempState);
   const [pill_, setPill_] = useRecoilState(PillState);
   const [collection_, setCollection_] = useRecoilState(CollectionState);
+  const [user_, setUser_] = useRecoilState(UserState);
+  const [product_, setProduct_] = useRecoilState(ProductState);
 
   useEffect(() => {
-    // products_
-    let x:any = []
-    products_.forEach((e:any) => {
-      if(!x.includes(e.collection)){
-        x = [...x, e.collection]
+    let x: any = [];
+    products_.forEach((e: any) => {
+      if (!x.includes(e.collection)) {
+        x = [...x, e.collection];
       }
-    })
-    setTags_(x)
-  }, [])
+    });
+    setTags_(x);
+  }, [product_]);
   return (
     <div
       className={`min-h-2 w-full flex flex-col justify-start items-center px-12 fixed top-0 bg-white/50 backdrop-blur-md`}
@@ -225,6 +280,7 @@ export const Search_ = () => {
           <FontAwesomeIcon
             icon={faSearch}
             className={`mx-3 ml-2 text-[15px] text-black/60 cursor-pointer`}
+            onClick={async () => {}}
           />
           <FontAwesomeIcon
             icon={faArrowRotateLeft}
@@ -254,6 +310,7 @@ export const Search_ = () => {
             }}
           />
         </div>
+
         <div
           className={`w-full min-h-2 flex flex-col justify-center items-between md:items-end`}
         >
@@ -269,6 +326,12 @@ export const Search_ = () => {
             />
           </div>
         </div>
+
+        <div
+          className={`min-w-40 text-right text-[14px] _monts cursor-pointer hover:text-black/80 text-black/50`}
+        >
+          Hi, {user_.displayName}
+        </div>
       </div>
       <div
         className={`flex flex-col justify-center items-center lg2:w-[85.2%] w-full h-2 top-20 fixed z-[1]`}
@@ -281,13 +344,13 @@ export const Search_ = () => {
         <div
           className={`w-full ml-0 md2:ml-4 md2:text-left md:text-[35px] text-[20px] text-center font-black`}
         >
-          RE-L8: {collection_ ? collection_ : 'Full Offering'}
+          RE-L8: {collection_ ? collection_ : "Full Offering"}
         </div>
         <div className={`flex flex-row z-[2] w-full pb-2`}>
           <div
             className={`w-full h-full flex flex-row md2:justify-end justify-center items-center`}
           >
-            {tags_.map((obj_:any, index:any) => {
+            {tags_.map((obj_: any, index: any) => {
               return (
                 <div
                   className={`min-w-[80px] h-[20px] border-solid border-[1px] border-black/50 hover:border-orange-600 flex flex-row justify-center items-center rounded-[15px] mx-1 px-4 cursor-pointer text-black/65 hover:text-white/80 hover:bg-orange-600 ${
@@ -295,8 +358,8 @@ export const Search_ = () => {
                   } transition-all duration-500 hover:duration-200`}
                   key={index}
                   onClick={() => {
-                    setPill_(!pill_)
-                    setCollection_(obj_ == collection_ ? '' : obj_)
+                    setPill_(!pill_);
+                    setCollection_(obj_ == collection_ ? "" : obj_);
                   }}
                 >
                   <p className={`text-[12px] text-center min-w-[80px]`}>
