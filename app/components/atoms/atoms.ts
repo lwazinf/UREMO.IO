@@ -37,6 +37,11 @@ export const SearchState = atom<any>({
   default: '',
 });
 
+export const EntryState = atom<any>({
+  key: `${COMPONENT_NAME}/EntryState`,
+  default: false,
+});
+
 export const DataState = atom<any>({
   key: `${COMPONENT_NAME}/DataState`,
   default: {

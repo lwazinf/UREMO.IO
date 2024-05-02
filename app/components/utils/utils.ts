@@ -11,8 +11,8 @@ import {
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { v4 } from "uuid";
 
-export const getCollection_ = async (data_: string) => {
-  const dbName = data_; // Change DB name here..
+export const getCollection_ = async (data_: any) => {
+  const dbName = `stores/${data_.email}/stores/${data_.store}/products`; // Change DB name here..
   const colRef = collection(db, dbName);
 
   const query_ = query(colRef);
@@ -25,7 +25,7 @@ export const getCollection_ = async (data_: string) => {
 };
 
 export const updateCollection_ = (data_: any) => {
-  const dbName = `stores/${data_.email}/products`; // Change DB name here..
+  const dbName = `stores/${data_.email}/stores/rel8/products`; // Change DB name here..
   const collection_ = collection(db, dbName);
   const id_ = v4()
   setDoc(doc(collection_, id_), {...data_.data, id:id_})

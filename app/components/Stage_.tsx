@@ -9,11 +9,14 @@ import {
   DataState,
   ProductState,
   SearchState,
+  EntryState,
   DataTempState,
   CollectionState,
 } from "./atoms/atoms";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRecoilState } from "recoil";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 interface Stage_Props {
   style_: string;
@@ -22,11 +25,18 @@ interface Stage_Props {
 const Stage_ = ({ style_ }: Stage_Props) => {
   const [open_, setOpen_] = useRecoilState(OpenState);
   const [data_, setData_] = useRecoilState(DataState);
+  const [entry_, setEntry_] = useRecoilState(EntryState);
   const [dataTemp_, setDataTemp_] = useRecoilState(DataTempState);
   const [product_, setProduct_] = useRecoilState(ProductState);
   const [collection_, setCollection_] = useRecoilState(CollectionState);
 
   const [searchPhrase_, setSearchPhrase_] = useRecoilState(SearchState);
+  const [instructions_, setInstructions_] = useState([
+    "What Is Your Name?",
+    "How Are You Today?",
+  ]);
+  const [instruct_, setInstruct_] = useState(0);
+
   return (
     <div
       className={`${style_} grid min-h-2  lg2:grid-cols-3 md2:grid-cols-2 scale-[.95] grid-cols-1 gap-8 gap-y-2 lg2:gap-y-0 justify-center items-start relative min-w-full h-full`}
@@ -35,12 +45,73 @@ const Stage_ = ({ style_ }: Stage_Props) => {
       className={`grid grid-cols-3 gap-1.5 w-full justify-between align-start p-1 items-center justify-center transition-all duration-100 overflow-y-scroll overflow-x-visible scrollbar-hide relative right-4`}
     > */}
       <AnimatePresence>
+        <motion.div
+          className={`flex flex-row justify-center lg2:scale-[0.9] md2:scale-[1] items-center w-[520px] min-h-[235px] border-dashed border-[1px] border-black/5 hover:border-black/10 bg-black/20 hover:bg-black/5 opacity-80 hover:opacity-100 transition-all duration-200 p-1.5 rounded-[6px] cursor-pointer scale-[.98] overflow-hidden relative text-white/80 hover:text-white`}
+        >
+          <img
+            src={`https://github.com/lwazinf/lwazinf/raw/main/imageedit_2_7067580932.jpg?raw=true`}
+            className={`w-full h-full object-cover absolute opacity-100 z-[1] ${
+              entry_ ? "pointer-events-none" : "pointer-events-auto"
+            }`}
+          />
+          <div
+            className={`w-full h-full backdrop-blur-md absolute bg-black/50 hover:bg-black/60 z-[1] ${
+              entry_ ? "pointer-events-none" : "pointer-events-auto"
+            }`}
+            onClick={() => {
+              setEntry_(true);
+            }}
+          />
+          <div
+            className={`flex-row justify-center items-center w-full h-full flex relative pointer-events-none`}
+          >
+            <FontAwesomeIcon
+              icon={faPlus}
+              className={`text-[20px] opacity-80 z-[2] mr-2 ${
+                entry_ ? "hidden" : "block"
+              }`}
+            />
+            <div
+              className={`text-[18px] z-[2] font-medium ${
+                entry_ ? "hidden" : "block"
+              }`}
+            >
+              Add Something
+            </div>
+          </div>
+          <div
+            className={`flex-row justify-start items-start w-full h-full flex relative`}
+          >
+            {instructions_.map((question, index) => {
+              return (
+                <div
+                  className={`text-[18px] z-[2] font-medium absolute w-full h-full flex flex-col justify-center items-center transition-all duration-200 px-8 ${
+                    instruct_ == index && entry_ ? "opacity-100" : "opacity-0"
+                  }`}
+                  key={index}
+                >
+                  <p
+                    className={`w-full my-2 flex flex-col justify-center items-start text-start`}
+                  >
+                    {question}
+                  </p>
+                  <input
+                    type="text"
+                    placeholder={question}
+                    className={`text-start w-full`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
         {product_.map((obj_, index) => {
           if (
             obj_.desc.toLowerCase().includes(searchPhrase_.toLowerCase()) ||
             obj_.title.toLowerCase().includes(searchPhrase_.toLowerCase())
           ) {
-            if(obj_.collection == collection_ || collection_ == ""){
+            if (obj_.collection == collection_ || collection_ == "") {
               return (
                 <motion.div
                   key={index}
@@ -90,7 +161,9 @@ const Stage_ = ({ style_ }: Stage_Props) => {
                     <div
                       className={`flex flex-row min-w-[70%] justify-start items-center scale-[.95]`}
                     >
-                      <p className={`text-[14px] font-normal _oswald opacity-30`}>
+                      <p
+                        className={`text-[14px] font-normal _oswald opacity-30`}
+                      >
                         By {obj_.house}
                       </p>
                       <FontAwesomeIcon

@@ -35,7 +35,7 @@ import {
   faSignOut,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { getCollection_, signIn_ } from "./utils/utils";
+import { signIn_ } from "./utils/utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
 
@@ -330,7 +330,7 @@ export const Search_ = () => {
         <div
           className={`min-w-40 text-right text-[14px] _monts cursor-pointer hover:text-black/80 text-black/50`}
         >
-          Hi, {user_.displayName}
+          Hi, {user_ ? user_.displayName : 'Guest'}
         </div>
       </div>
       <div
