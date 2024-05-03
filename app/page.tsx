@@ -14,7 +14,6 @@ export default function Home() {
   const getProducts_ = async () => {
     const data = await getCollection_({email: user_.email, store: 'rel8'});
     setProduct_(data);
-    console.log(data);
   };
 
   useEffect(() => {

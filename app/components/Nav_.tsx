@@ -64,10 +64,8 @@ const Nav_ = () => {
     const interval = setInterval(() => {
       if (switch_) {
         setURL_(generateURL());
-        console.log("on");
       } else {
         setURL_(generateURL());
-        console.log("off");
       }
     }, 30000); // 30000 milliseconds = 30 seconds
 
@@ -81,7 +79,7 @@ const Nav_ = () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         // User is signed in
-        console.log("User is logged in:", user.uid);
+        // console.log("User is logged in:", user.uid);
 
         // Create a new object with the user information
         const newUser = {
