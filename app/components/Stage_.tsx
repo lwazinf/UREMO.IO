@@ -29,11 +29,6 @@ const Stage_ = ({ style_ }: Stage_Props) => {
   const [collection_, setCollection_] = useRecoilState(CollectionState);
 
   const [searchPhrase_, setSearchPhrase_] = useRecoilState(SearchState);
-  const [instructions_, setInstructions_] = useState([
-    "What Is Your Name?",
-    "How Are You Today?",
-  ]);
-  const [instruct_, setInstruct_] = useState(0);
 
   return (
     <div
