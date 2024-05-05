@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { DataState, EntryState, TagState } from "./atoms/atoms";

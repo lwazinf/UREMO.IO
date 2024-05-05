@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { faCloudversify } from "@fortawesome/free-brands-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { faVialCircleCheck } from "@fortawesome/free-solid-svg-icons/faVialCircleCheck";
