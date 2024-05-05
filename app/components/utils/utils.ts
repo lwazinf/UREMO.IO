@@ -48,7 +48,7 @@ export const signOut_ = () => {
   return signOut(auth);
 };
 
-async function uploadFileAndGetDownloadLink(file: File, email:string, tag:string) {
+async function uploadFileAndGetDownloadLink(file: File, email:string) {
   const storage = getStorage();
   const storageRef = ref(storage, `proofs_of_payment/${email}/${'pop_'+email+'.'+file.name.split('.').pop()}`);
   const uploadTask = uploadBytesResumable(storageRef, file);

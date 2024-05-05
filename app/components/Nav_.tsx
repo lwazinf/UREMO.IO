@@ -35,7 +35,7 @@ import {
   faSignOut,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { signIn_ } from "./utils/utils";
+import { signIn_, signOut_ } from "./utils/utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
 
@@ -58,7 +58,7 @@ const Nav_ = () => {
     setSwitch_(!switch_);
     return images_[randomNumber];
   };
-  
+
   useEffect(() => {
     setURL_(generateURL());
     const interval = setInterval(() => {
@@ -142,20 +142,24 @@ const Nav_ = () => {
             },
             {
               func: async () => {
-                // setMenu_(!menu_);
-                await signIn_().then((e) => {
-                  // Create a new object with the user information
-                  const newUser = {
-                    uid: e.uid,
-                    displayName: e.displayName,
-                    email: e.email,
-                    dp: e.photoURL /* and other properties */,
-                  };
+                if (user_) {
+                  signOut_();
+                } else {
+                  // setMenu_(!menu_);
+                  await signIn_().then((e) => {
+                    // Create a new object with the user information
+                    const newUser = {
+                      uid: e.uid,
+                      displayName: e.displayName,
+                      email: e.email,
+                      dp: e.photoURL /* and other properties */,
+                    };
 
-                  // Set the new user object in your application state
-                  // setUser_(newUser);
-                  console.log(newUser);
-                });
+                    // Set the new user object in your application state
+                    // setUser_(newUser);
+                    console.log(newUser);
+                  });
+                }
               },
               icon: faUser,
             },
@@ -163,7 +167,11 @@ const Nav_ = () => {
             return (
               <div
                 // Set the classes for the div element
-                className={`w-[30px] h-[30px] border-solid border-[1px] bg-black border-black/80 hover:bg-orange-600 hover:border-orange-600 text-white transition-all duration-500 cursor-pointer rounded-full flex justify-center items-center my-1`}
+                className={`w-[30px] h-[30px] border-solid border-[1px] hover:bg-orange-600 hover:border-orange-600 ${
+                  obj_.icon == faUser && !user_
+                    ? "border-orange-600 bg-orange-600 animate-pulse"
+                    : "bg-black border-black/80"
+                } text-white transition-all duration-500 cursor-pointer rounded-full flex justify-center items-center my-1`}
                 onClick={obj_.func} // Set the onClick handler
                 key={index} // Use the index as a key
               >
@@ -326,9 +334,15 @@ export const Search_ = () => {
         </div>
 
         <div
-          className={`min-w-40 text-right text-[14px] _monts cursor-pointer hover:text-black/80 text-black/50`}
+          className={`min-w-40 text-left text-[14px] _monts cursor-pointer hover:text-black/80 text-black/50 flex flex-row items-end justify-end`}
         >
-          Hi, {user_ ? user_.displayName : 'Guest'}
+          <div className={`w-[50px] h-[50px] rounded-[50%] overflow-hidden`}>
+            <img
+              src={user_ ? user_.dp : ""}
+              className={`object-cover w-full h-full`}
+            />
+          </div>
+          {/* Hi, {user_ ? user_.displayName : "Guest"} */}
         </div>
       </div>
       <div
